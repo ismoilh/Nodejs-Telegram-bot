@@ -1,0 +1,22 @@
+version: "2"
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_USER: ${USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    shm_size: 256MB
+    ports:
+      - "5432:${PORT}"
+  web:
+    image: node-postgres-test
+    restart: on-failure:10
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
